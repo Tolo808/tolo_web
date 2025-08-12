@@ -243,6 +243,10 @@ def notify_driver():
         )
         message_2 = (
             f"Your Driver Has Been Assigned / ውድ ደንበኛ፣ ሹፌርህ ተመድቧል።\n"
+            f"from / ከ:{senderphone}\n"
+            f"Location / ቦታ: {pickup_location }\n"
+            f"To / ለ: {reciverphone}\n"
+            f"Location / ቦታ:{dropoff_location}\n"
             f"Driver Name / የሾፌር ስም: {driver.get('name', 'N/A')}\n"
             f"Driver Phone / ሹፌር ስልክ: {driver.get('phone', 'N/A')}\n"
             f"license Plate / የመንጃ ፈቃድ ሰሌዳ: {driver.get('vehicle_plate', 'N/A')}\n"
