@@ -102,26 +102,35 @@
     </div>
 
     <!-- 🧑‍✈️ Deliveries per Driver -->
+
     <div id="drivers" class="tab-content {% if active_tab == 'drivers' %}active{% endif %} chart-container">
         <h2>🧑‍✈️ Deliveries per Driver</h2>
-
+    
         <form method="get" style="margin-bottom: 15px;">
             <input type="hidden" name="tab" value="drivers">
             <label for="days_drivers">Filter by days:</label>
+            <!-- Existing select options -->
             <select name="days_drivers" id="days_drivers" onchange="this.form.submit()">
                 {% for d in [7, 14, 30, 60] %}
                 <option value="{{ d }}" {% if days_drivers==d %}selected{% endif %}>Last {{ d }} days</option>
                 {% endfor %}
             </select>
+    
+            <!-- Custom input for exact days -->
+            <input type="number" name="custom_days_drivers" placeholder="Custom days" min="1"
+                   value="{{ custom_days_drivers if custom_days_drivers is defined else '' }}"
+                   style="width:100px; margin-left:10px;">
+            <button type="submit" style="padding: 6px 10px; margin-left:5px;">Apply</button>
         </form>
-
+    
         <button id="exportDriverPdf"
             style="margin-bottom: 15px; padding: 8px 12px; background-color:#4CAF50; color:white; border:none; border-radius:5px; cursor:pointer;">
             Export Successful Deliveries PDF
         </button>
-
+    
         <canvas id="driverChart"></canvas>
     </div>
+
 
     <!-- 👤 Users -->
     <div id="users" class="tab-content {% if active_tab == 'users' %}active{% endif %} chart-container">
