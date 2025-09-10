@@ -770,13 +770,21 @@ def export_daily_pdf():
 @app.route("/statistics/export_driver_pdf")
 def export_driver_report_pdf():
     try:
-        days = int(request.args.get("days", 30))
+        # 1️⃣ Get days from query parameters (custom takes priority)
+        days = request.args.get("custom_days_drivers") or request.args.get("days", 30)
+        try:
+            days = max(int(days), 1)  # ensure at least 1 day
+        except ValueError:
+            days = 30
+
         now = datetime.now()
         since = now - timedelta(days=days)
 
+        # 2️⃣ Fetch deliveries and drivers
         deliveries = list(deliveries_col.find({}))
         drivers = list(drivers_col.find({}))
 
+        # 3️⃣ Prepare statistics
         driver_stats = defaultdict(lambda: {
             "count": 0,
             "total_price": 0,
@@ -784,7 +792,6 @@ def export_driver_report_pdf():
             "birr_200": 0,
             "birr_300": 0,
         })
-
         driver_daily_breakdown = defaultdict(lambda: defaultdict(int))
 
         for d in deliveries:
@@ -798,7 +805,6 @@ def export_driver_report_pdf():
                 continue
             if d.get("status", "").lower() != "successful":
                 continue
-            
 
             driver_id = d.get("assigned_driver_id")
             price = int(d.get("price", 0))
@@ -819,10 +825,10 @@ def export_driver_report_pdf():
         driver_name_map = {str(d["_id"]): d.get("name", "Unnamed") for d in drivers}
         avg_days = max(days, 1)
 
-        # Build full date list for the report period
+        # 4️⃣ Build full date list for the report period
         date_list = [(since + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(days)]
 
-        # Generate PDF
+        # 5️⃣ Generate PDF
         buffer = BytesIO()
         p = canvas.Canvas(buffer, pagesize=letter)
         width, height = letter
@@ -1116,4 +1122,5 @@ def old_deliveries():
 if __name__ == "__main__":  
     port = int(os.environ.get("PORT", 3000))
     app.run(debug=False, host="0.0.0.0", port=port)
+
 
