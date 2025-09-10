@@ -639,7 +639,7 @@ def export_daily_pdf():
 
             day = ts.strftime("%Y-%m-%d")
             status = d.get("status", "pending").lower()
-            price = int(d.get("price", 0))
+            price = int(d.get("price") or 0)
 
             if status == "successful":
                 daily_stats[day]["successful"] += 1
@@ -1116,3 +1116,4 @@ def old_deliveries():
 if __name__ == "__main__":  
     port = int(os.environ.get("PORT", 3000))
     app.run(debug=False, host="0.0.0.0", port=port)
+
